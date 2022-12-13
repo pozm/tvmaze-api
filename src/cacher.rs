@@ -13,11 +13,14 @@ pub trait TvMazeCacher: Debug {
 #[derive(Debug)]
 pub struct InMemoryCacher {
     data: std::collections::HashMap<String, (Value,SystemTime)>,
-}
+    cache_time: u64,
+} 
 impl InMemoryCacher {
-    pub fn new() -> Self {
+    /// cache time in seconds
+    pub fn new(cache_time:Option<u64>) -> Self {
         Self {
             data: std::collections::HashMap::new(),
+            cache_time: cache_time.unwrap_or(60 * 60),
         }
     }
 }
@@ -25,7 +28,7 @@ impl InMemoryCacher {
 impl TvMazeCacher for InMemoryCacher {
     async fn get(&self, url: &str) -> Option<Value> {
         if let Some(ref da ) = self.data.get(url) {
-            if da.1.elapsed().unwrap().as_secs() > 60 * 60 * 24 {
+            if da.1.elapsed().unwrap().as_secs() > self.cache_time {
                 return None;
             }
             Some(da.0.clone())

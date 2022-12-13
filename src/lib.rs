@@ -30,6 +30,7 @@ impl TvMazeClient {
     pub fn new(cacher : Box<dyn TvMazeCacher>) -> Self {
         Self {
             client: reqwest::Client::new(),
+            // rwlock cause i really don't want to have to change everything to be &mut self, lol.
             cacher: RwLock::new(cacher),
         }
     }
@@ -53,6 +54,11 @@ impl TvMazeClient {
             ShowLookup::IMDB(id) => format!("{}/lookup/shows?imdb={}", Self::BASE_URL, id),
         };
         let data = self.fetch(&url).await?;
+        Ok(Show::new(self, data))
+    }
+    pub async fn get_show<'a>(&self,id: u32) -> Result<Show> {
+
+        let data = self.fetch(&format!("{}/shows/{}",TvMazeClient::BASE_URL, id)).await?;
         Ok(Show::new(self, data))
     }
 }

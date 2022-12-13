@@ -42,7 +42,7 @@ pub struct Schedule {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Rating {
-    pub average: f64,
+    pub average: Option<f64>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -83,7 +83,7 @@ pub struct Links {
     #[serde(rename = "self")]
     pub self_field: Self_field,
     pub previousepisode: Previousepisode,
-    pub nextepisode: Nextepisode,
+    pub nextepisode: Option<Nextepisode>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
